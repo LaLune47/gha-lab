@@ -2,9 +2,23 @@ name: test
 on:
   push:
     branches: [ main ]
-jobs: 
+jobs:
   build:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2 
-      - run: python hello.py
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || true  # 如果没有requirements文件会继续
+
+      - name: Run tests
+        run: |
+          python -m unittest discover || pytest  # 如果使用pytest,确保已安装
